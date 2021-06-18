@@ -1,0 +1,144 @@
+<!-- Anuflora Systems  -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" href="style.css" />
+    <script src="nusmoneyscript_edit.js"></script>
+    <title>EasiVest Investment Wallet</title>
+  </head>
+  <body>
+  
+
+    <div class="container">
+      <h3>Customer Login</h3>
+      <form id="form">
+        <div class="form-control">
+          <label for="custname">Customer Name</label>    
+          <input type="text" id="custname" placeholder="Enter customername..." />
+        </div>
+        <label for="password">Password</label>    
+          <input type="text" id="password" placeholder="Enter password..." />
+        <p><button class="btn">Submit</button></p>
+        <div class="form-control">
+        </div>
+       
+      </form>
+      <div class="container">
+      <h2> Investment Wallet</h2>
+      <h4>Your EasiVest Dollars</h4>
+      <h1 id="balance">$0.00</h1>
+      <button class="btn" onclick="openForm()">Top Up</button>
+
+      <button class="btn">Transfer</button><div class="form-popup" id="myForm">
+      <form action="/action_page.php" class="form-container">
+      <h2>Top Up</h2>
+
+      <label for="amount"><b>Amount</b></label>
+      <input type="text" placeholder="Enter Amount" name="email" required>
+
+      <button type="submit" class="btn">Submit</button>
+      <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
+      </form>
+      </div>
+
+      <h3>Wallet Transactions</h3>
+      <!--need to add div class="mypanel"?-->
+      <div class="transTable"></div>
+      <!--<table class="GeneratedTable">
+        <thead>
+          <tr>
+            <th>Header</th>
+            <th>Header</th>
+            <th>Header</th>
+            <th>Header</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Cell</td>
+            <td>Cell</td>
+            <td>Cell</td>
+            <td>Cell</td>
+          </tr>
+          <tr>
+            <td>Cell</td>
+            <td>Cell</td>
+            <td>Cell</td>
+            <td>Cell</td>
+          </tr>
+          <tr>
+            <td>Cell</td>
+            <td>Cell</td>
+            <td>Cell</td>
+            <td>Cell</td>
+          </tr>
+          <tr>
+            <td>Cell</td>
+            <td>Cell</td>
+            <td>Cell</td>
+            <td>Cell</td>
+          </tr>
+          <tr>
+            <td>Cell</td>
+            <td>Cell</td>
+            <td>Cell</td>
+            <td>Cell</td>
+          </tr>
+        </tbody>
+      </table> -->
+      <button class="myBtn" onclick=getTransByIdRecent()>Load more...</button>
+
+      
+       
+    
+    <h3>Recent Investments Made</h3>
+    <div class="investTable"></div>
+    <!--<table class="GeneratedTable">
+      <thead>
+      <tr>
+      <th>head1</th>
+      <th>head2</th>
+      <th>head3</th>
+      <th>head4</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+      <td>cell1_1</td>
+      <td>cell2_1</td>
+      <td>cell3_1</td>
+      <td>cell4_1</td>
+      </tr>
+      <tr>
+      <td>cell1_2</td>
+      <td>cell2_2</td>
+      <td>cell3_2</td>
+      <td>cell4_2</td>
+      </tr>
+      <tr>
+      <td>cell1_3</td>
+      <td>cell2_3</td>
+      <td>cell3_3</td>
+      <td>cell4_3</td>
+      </tr>
+      <tr>
+      <td>cell1_4</td>
+      <td>cell2_4</td>
+      <td>cell3_4</td>
+      <td>cell4_4</td>
+      </tr>
+      <tr>
+      <td>cell1_5</td>
+      <td>cell2_5</td>
+      <td>cell3_5</td>
+      <td>cell4_5</td>
+      </tr>-->
+      </tbody>
+      </table> 
+    </div>
+<!--   <script src="nusmoneyscript.js"></script> --> 
+  </body>
+</html>
