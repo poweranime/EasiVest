@@ -1,7 +1,22 @@
 //const fetch = require("node-fetch"); //only needed for run inside nodeJS, to be removed when integrated with HTML
-var user_id = 1;
+var user_id = 10;
+var trans_amount = 30;
+var date 
 //let dataSample, dataSample2;
 
+// ----------Generate current date and time----------
+var today = new Date();
+var dd = String(today.getDate()).padStart(2, '0');
+var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+var yyyy = today.getFullYear();
+var hh = today.getHours();
+var min = today.getMinutes();
+var ss = today.getSeconds();
+
+today = yyyy + '-' + mm + '-' + dd + ' ' + hh + ':' + min + ':' + ss;
+// console.log(today);
+
+//----------Functions----------
 function getTransByIdAll() {
     fetch(`http://localhost:3000/transaction/all?user_id=${user_id}`, {method: "GET"}) //    fetch("http://localhost:3000/transaction/all", {method: "GET"})
         .then((response) =>  response.json())
@@ -20,7 +35,7 @@ function getTransByIdAll() {
             data.forEach((item) => {
                 text += `
                     <tr>
-                      <td>${item.trans_type}</td>
+                      <td>${item.trans_type}<br>${item.trans_des}</td>
                       <td>${item.timestamp}</td>
                       <td>${item.amount}</td>
                     </tr>`;
@@ -53,7 +68,7 @@ function getTransByIdRecent() {
             data.forEach((item) => {
                 text += `
                     <tr>
-                      <td>${item.trans_type}</td>
+                      <td>${item.trans_type}<br>${item.trans_des}</td>
                       <td>${item.timestamp}</td>
                       <td>${item.amount}</td>
                     </tr>`;
@@ -161,7 +176,70 @@ function getTransBalById() {
 //        return dataSample;
 };
 
-function init() {
+function addTrans() {
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+  
+    // Populate this data from e.g. form.
+    var raw = JSON.stringify({
+      user_id: user_id,
+      timestamp: today,
+      trans_type: "top_up_savings",
+      trans_des: "Credit Card",
+      amount: trans_amount,
+    });
+  
+    var requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: raw,
+    };
+  
+    fetch("http://localhost:3000/transaction/add", requestOptions)
+      .then((response) => response.text())
+      .then((result) => console.log(result)) //.then((result) => $(".mypanel").html(result))
+      .catch((error) => console.log("error", error));
+  }
+
+function updateTransBalById() {
+
+    fetch(`http://localhost:3000/user/trans_bal?user_id=${user_id}`, {method: "GET"}) // first get the latest balance from user data base
+        .then((response) =>  response.json())
+        .then((data) => {            
+            data.forEach((item) => {
+                var balanceNew = item.trans_bal + trans_amount; //then calculate updated balance = retrieved balance + transaction amount
+
+                //--Create json of input data
+                var myHeaders = new Headers();
+                myHeaders.append("Content-Type", "application/json");
+
+                var raw = JSON.stringify({
+                    trans_bal: balanceNew,
+                  });
+                
+                var requestOptions = {
+                    method: "POST",
+                    headers: myHeaders,
+                    body: raw,
+                  };
+                //--end of Create json of input data
+
+                fetch(`http://localhost:3000/user/update_trans_bal?user_id=${user_id}`, requestOptions) //generate command to update balance
+                  .then((response) => response.text())
+                  .then((result) => console.log(result))
+                  .catch((error) => console.log("error", error));
+              
+
+            });
+
+
+        })
+        .catch((error) => console.log("error", error));
+
+};
+
+
+function updateValues() {
     // document.querySelector('.transTable').innerHTML = '';
     // document.querySelector('.invesetTable').innerHTML = '';
     // document.querySelector('#balance').innerHTML = `$ 0.00`
@@ -170,11 +248,40 @@ function init() {
     getTransBalById();
  }
 
-window.onload = init();
+window.onload = updateValues();
+// updateTransBalById();
+// addTrans();
 // getTransByIdRecent()
 // getInvestByIdRecent()
 // getTransBalById()
-//getInvestByIdAll()
+// getInvestByIdAll()
+
+
+// function postData() {
+//     var myHeaders = new Headers();
+//     myHeaders.append("Content-Type", "application/json");
+  
+//     // Populate this data from e.g. form.
+//     var raw = JSON.stringify({
+//       type: 0,
+//       name: "dixant mittal",
+//       email: "dixant@email.com",
+//       tolerance: 0.5,
+//       wallet: 100000,
+//     });
+  
+//     var requestOptions = {
+//       method: "POST",
+//       headers: myHeaders,
+//       body: raw,
+//     };
+  
+//     fetch("http://localhost:3000/user/add", requestOptions)
+//       .then((response) => response.text())
+//       .then((result) => $(".mypanel").html(result))
+//       .catch((error) => console.log("error", error));
+//   }
+
 
 // !async function getTransByIdAllv2() {
 //     let fetchData = await fetch(`http://localhost:3000/transaction/all?user_id=${user_id}`, {method: "GET"}) //    fetch("http://localhost:3000/transaction/all", {method: "GET"})

@@ -5,7 +5,7 @@ router = express.Router();
 
 //API_ID=1
 router.get("/transaction/recent", (request, response) => {
-    database.connection.query(`select trans_type, timestamp, amount
+    database.connection.query(`select trans_type, trans_des, timestamp, amount
                                from transaction
                                where user_id = ${request.query.user_id}
                                order by timestamp desc
@@ -21,7 +21,7 @@ router.get("/transaction/recent", (request, response) => {
 
 //API_ID=2
 router.get("/transaction/all", (request, response) => {
-    database.connection.query(`select trans_type, timestamp, amount
+    database.connection.query(`select trans_type, trans_des, timestamp, amount
                                from transaction
                                where user_id = ${request.query.user_id}
                                order by timestamp desc`, (errors, results) => { //                               from transaction`, (errors, results) => 
