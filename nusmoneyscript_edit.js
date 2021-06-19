@@ -1,8 +1,9 @@
 //const fetch = require("node-fetch"); //only needed for run inside nodeJS, to be removed when integrated with HTML
 var user_id = 10;
-var trans_amount = 30;
+var trans_amount, trans_type_, trans_des_, input_amount
 var date 
 //let dataSample, dataSample2;
+//   e.preventDefault();  //to prevent form from submitting and refreshing the page
 
 // ----------Generate current date and time----------
 var today = new Date();
@@ -176,6 +177,27 @@ function getTransBalById() {
 //        return dataSample;
 };
 
+function getInvestBalById() {
+    fetch(`http://localhost:3000/user/invest_bal?user_id=${user_id}`, {method: "GET"}) //    fetch("http://localhost:3000/transaction/all", {method: "GET"})
+        .then((response) =>  response.json())
+        .then((data) => {            
+            data.forEach((item) => {
+                document.querySelector('#DBSfundVal').innerHTML = `$ ${item.dbs_fund_bal}`
+                document.querySelector('#OCBCfundVal').innerHTML = `$ ${item.ocbc_fund_bal}`
+                document.querySelector('#UOBfundVal').innerHTML = `$ ${item.uob_fund_bal}`
+                //console.log(item.trans_bal);
+                // <td id="DBSfundVal">$ 0.00</td>
+                // <td id="OCBCfundVal">$ 0.00</td>
+                // <td id="UOBfundVal">$ 0.00</td>
+            });
+
+//            $(".transTable").html(text)
+
+        })
+        .catch((error) => console.log("error", error));
+//        return dataSample;
+};
+
 function addTrans() {
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
@@ -184,8 +206,8 @@ function addTrans() {
     var raw = JSON.stringify({
       user_id: user_id,
       timestamp: today,
-      trans_type: "top_up_savings",
-      trans_des: "Credit Card",
+      trans_type: trans_type_,
+      trans_des: trans_des_,
       amount: trans_amount,
     });
   
@@ -197,7 +219,7 @@ function addTrans() {
   
     fetch("http://localhost:3000/transaction/add", requestOptions)
       .then((response) => response.text())
-      .then((result) => console.log(result)) //.then((result) => $(".mypanel").html(result))
+      .then((result) => updateTransBalById()) //.then((result) => console.log(result)) 
       .catch((error) => console.log("error", error));
   }
 
@@ -207,14 +229,17 @@ function updateTransBalById() {
         .then((response) =>  response.json())
         .then((data) => {            
             data.forEach((item) => {
-                var balanceNew = item.trans_bal + trans_amount; //then calculate updated balance = retrieved balance + transaction amount
+                var balanceNew = parseFloat(item.trans_bal) + parseFloat(trans_amount); //then calculate updated balance = retrieved balance + transaction amount
+                console.log("balanceNew");
+                console.log(balanceNew);
+                //balanceNew = 8000; 
 
                 //--Create json of input data
                 var myHeaders = new Headers();
                 myHeaders.append("Content-Type", "application/json");
 
                 var raw = JSON.stringify({
-                    trans_bal: balanceNew,
+                    trans_bal: balanceNew, 
                   });
                 
                 var requestOptions = {
@@ -226,7 +251,7 @@ function updateTransBalById() {
 
                 fetch(`http://localhost:3000/user/update_trans_bal?user_id=${user_id}`, requestOptions) //generate command to update balance
                   .then((response) => response.text())
-                  .then((result) => console.log(result))
+                  .then((result) => updateValues()) //.then((result) => console.log(result))
                   .catch((error) => console.log("error", error));
               
 
@@ -238,6 +263,44 @@ function updateTransBalById() {
 
 };
 
+function topUpSubmitButton() {
+    event.preventDefault();
+    input_amount = document.getElementById('topUpAmount').value; // keep a separate input_amount variable to check that user did not enter negative/ invalid inputs. Code example: var val = document.querySelector('#newNumber').value;
+    console.log("function start");
+    console.log(input_amount);
+    console.log(document.getElementById('topUpAmount').value);
+    //input_amount = 200; 
+    trans_amount = input_amount;
+    console.log(trans_amount); //if((val !== undefined) && (val !== "")) {
+    trans_type_ = 'Top Up'; 
+    trans_des_ = 'Debit Card';
+
+    if((input_amount !== undefined) && (input_amount !== "") && (input_amount > 0)) {
+        addTrans();
+        closeFormTopUp();
+    }
+    //event.preventDefault();
+    //updateTransBalById();
+    //updateValues();
+}
+
+function transferSubmitButton() {
+    event.preventDefault();
+    input_amount = document.getElementById('transferAmount').value; // keep a separate input_amount variable to check that user did not enter negative/ invalid inputs. Code example: var val = document.querySelector('#newNumber').value;
+    trans_amount = input_amount * -1;
+    console.log("trans_amount is")
+    console.log(trans_amount); //if((val !== undefined) && (val !== "")) {
+    trans_type_ = 'Withdrawal'; 
+    trans_des_ = 'To Bank Account XXXXXXX';
+
+    if((input_amount !== undefined) && (input_amount !== "") && (input_amount > 0)) {
+        addTrans();
+        closeFormTopUp();
+    }
+
+    //updateTransBalById();
+    //updateValues();
+}
 
 function updateValues() {
     // document.querySelector('.transTable').innerHTML = '';
@@ -246,9 +309,12 @@ function updateValues() {
     getTransByIdRecent();
     getInvestByIdRecent();
     getTransBalById();
+    getInvestBalById();
  }
 
 window.onload = updateValues();
+// topUpSubmitButton();
+// transactionButton();
 // updateTransBalById();
 // addTrans();
 // getTransByIdRecent()
@@ -256,6 +322,11 @@ window.onload = updateValues();
 // getTransBalById()
 // getInvestByIdAll()
 
+// 1. Update transaction record, by negative amount if buy
+// 2. Update transaction balance 
+// 3. Update investment record
+// 4. Update investment balance, by negative amount if sell
+// 5. Update display values
 
 // function postData() {
 //     var myHeaders = new Headers();
@@ -369,13 +440,45 @@ window.onload = updateValues();
 //       .catch((error) => console.log("error", error));
 // }
 
-function openForm() {
-  document.getElementById("myForm").style.display = "block";
-}
+// function openForm() {
+//   document.getElementById("myForm").style.display = "block";
+// }
 
-function closeForm() {
-  document.getElementById("myForm").style.display = "none";
-}
+// function closeForm() {
+//   document.getElementById("myForm").style.display = "none";
+// }
+
+function openFormTopUp() {
+    document.getElementById("myTopUpForm").style.display = "block";
+  }
+  
+  function closeFormTopUp() {
+    document.getElementById("myTopUpForm").style.display = "none";
+  }
+  
+  function openFormTransfer() {
+    document.getElementById("myTransferForm").style.display = "block";
+  }
+  
+  function closeFormTransfer() {
+    document.getElementById("myTransferForm").style.display = "none";
+  }
+  
+  function openFormBuy() {
+    document.getElementById("myBuyForm").style.display = "block";
+  }
+  
+  function closeFormBuy() {
+    document.getElementById("myBuyForm").style.display = "none";
+  }
+  
+  function openFormSell() {
+    document.getElementById("mySellForm").style.display = "block";
+  }
+  
+  function closeFormSell() {
+    document.getElementById("mySellForm").style.display = "none";
+  }
 
 // (c) Anuflora Systems 
 // const balance = document.getElementById('balance');

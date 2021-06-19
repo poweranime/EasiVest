@@ -1,0 +1,193 @@
+<!-- Anuflora Systems  -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" href="style.css" />
+    <script src="nusmoneyscript_edit.js"></script>
+    <title>EasiVest Investment Wallet</title>
+  </head>
+  <body>
+  
+
+    <div class="container">
+      <h3>Customer Login</h3>
+      <form id="form">
+        <div class="form-control">
+          <label for="custname">Customer Name</label>    
+          <input type="text" id="custname" placeholder="Enter customername..." /> <!--<input type="text" id="custname" placeholder="Enter customername..." />-->
+        </div>
+        <label for="password">Password</label>    
+          <input type="text" id="password" placeholder="Enter password..." />
+        <p><button class="btn" >Submit</button></p> <!--<p><button class="btn">Submit</button></p>-->
+        <div class="form-control">
+        </div>
+       
+      </form>
+      <div class="container">
+      <h2> Investment Wallet</h2>
+      <h4>Your EasiVest Dollars</h4>
+      <h1 id="balance">$0.00</h1>
+      <button class="btn" onclick="openFormTopUp()">Top Up</button><div class="form-popup" id="myTopUpForm">
+        <form class="form-container"> <!--<form action="/action_page.php" class="form-container">-->
+        <h2>Top Up</h2>
+  
+        <label for="amount"><b>Amount</b></label>
+        <input type="number" placeholder="Enter Amount" id="topUpAmount" required> <!--<input type="number" id="topUpAmount" placeholder="Enter Amount" name="TopUp" required>-->
+  
+        <button type="submit" class="btn" onclick="topUpSubmitButton()">Submit</button> <!--<button type="submit" class="btn" onclick="topUpSubmitButton()">Submit</button>-->
+        <button type="button" class="btn cancel" onclick="closeFormTopUp()">Close</button>
+        </form>
+        </div>
+
+      <button class="btn" onclick="openFormTransfer()">Transfer</button><div class="form-popup" id="myTransferForm">
+      <form class="form-container"> <!--<form action="/action_page.php" class="form-container">-->
+      <h2>Transfer</h2>
+
+      <label for="amount"><b>Amount</b></label>
+      <input type="number" placeholder="Enter Amount" id="transferAmount" required>
+
+      <button type="submit" class="btn" onclick="transferSubmitButton()">Submit</button>
+      <button type="button" class="btn cancel" onclick="closeFormTransfer()">Close</button>
+      </form>
+    </div>
+
+      <h3>Wallet Transactions</h3>
+      <!--need to add div class="mypanel"?-->
+      <div class="transTable"></div>
+      <!-- <table class="GeneratedTable">
+        <thead>
+          <tr>
+            <th>Header</th>
+            <th>Header</th>
+            <th>Header</th>
+            <th>Header</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Cell</td>
+            <td>Cell</td>
+            <td>Cell</td>
+            <td>Cell</td>
+          </tr>
+          <tr>
+            <td>Cell</td>
+            <td>Cell</td>
+            <td>Cell</td>
+            <td>Cell</td>
+          </tr>
+          <tr>
+            <td>Cell</td>
+            <td>Cell</td>
+            <td>Cell</td>
+            <td>Cell</td>
+          </tr>
+          <tr>
+            <td>Cell</td>
+            <td>Cell</td>
+            <td>Cell</td>
+            <td>Cell</td>
+          </tr>
+          <tr>
+            <td>Cell</td>
+            <td>Cell</td>
+            <td>Cell</td>
+            <td>Cell</td>
+          </tr>
+        </tbody> 
+      </table>-->
+      <button class="myBtn" onclick=getTransByIdAll()>Load more...</button>
+
+    <h3>Current Fund Holdings</h3>
+    <table class="GeneratedTable">
+      <thead>
+      <tr>
+      <th>DBS Fund</th>
+      <th>OCBC Fund</th>
+      <th>UOB Fund</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+      <td id="DBSfundVal">$ 0.00</td>
+      <td id="OCBCfundVal">$ 0.00</td>
+      <td id="UOBfundVal">$ 0.00</td>
+      </tr>
+      </tbody>
+      </table> 
+    </div>
+    <button class="btn" onclick="openFormBuy()">Buy</button><div class="form-popup" id="myBuyForm">
+      <form action="/action_page.php" class="form-container">
+      <h2>Buy</h2>
+
+      <label for="amount"><b>Amount</b></label>
+      <input type="number" placeholder="Enter Amount" name="Buy" required>
+
+      <button type="submit" class="btn">Submit</button>
+      <button type="button" class="btn cancel" onclick="closeFormBuy()">Close</button>
+      </form>
+      </div>
+
+    <button class="btn" onclick="openFormSell()">Sell</button><div class="form-popup" id="mySellForm">
+    <form action="/action_page.php" class="form-container">
+    <h2>Sell</h2>
+
+    <label for="amount"><b>Amount</b></label>
+    <input type="number" placeholder="Enter Amount" name="Sell" required>
+
+    <button type="submit" class="btn">Submit</button>
+    <button type="button" class="btn cancel" onclick="closeFormSell()">Close</button>
+    </form>
+  </div>
+
+    <h3>Recent Investments Made</h3>
+    <div class="investTable"></div>
+    <!--<table class="GeneratedTable">
+      <thead>
+      <tr>
+      <th>head1</th>
+      <th>head2</th>
+      <th>head3</th>
+      <th>head4</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+      <td>cell1_1</td>
+      <td>cell2_1</td>
+      <td>cell3_1</td>
+      <td>cell4_1</td>
+      </tr>
+      <tr>
+      <td>cell1_2</td>
+      <td>cell2_2</td>
+      <td>cell3_2</td>
+      <td>cell4_2</td>
+      </tr>
+      <tr>
+      <td>cell1_3</td>
+      <td>cell2_3</td>
+      <td>cell3_3</td>
+      <td>cell4_3</td>
+      </tr>
+      <tr>
+      <td>cell1_4</td>
+      <td>cell2_4</td>
+      <td>cell3_4</td>
+      <td>cell4_4</td>
+      </tr>
+      <tr>
+      <td>cell1_5</td>
+      <td>cell2_5</td>
+      <td>cell3_5</td>
+      <td>cell4_5</td>
+      </tr>
+      </tbody>
+      </table> -->
+    </div>
+    <!--<script src="nusmoneyscript.js"></script>-->
+  </body>
+</html>
