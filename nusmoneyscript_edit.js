@@ -1,28 +1,51 @@
 //const fetch = require("node-fetch"); //only needed for run inside nodeJS, to be removed when integrated with HTML
-var user_id = 1;
-var trans_amount, trans_type_, trans_des_, input_amount
-var date 
 
+//---------------------------------------------------------
+// ----------Initialise variables ----------
+//---------------------------------------------------------
+var user_id = 1;
+var trans_amount, trans_type_, trans_des_, input_amount, today
+var date 
 //var login_id = 'Newberry'; 
 //var password = 'crTufWpe';
 
 
-// ----------Generate current date and time----------
-var today = new Date();
-var dd = String(today.getDate()).padStart(2, '0');
-var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-var yyyy = today.getFullYear();
-var hh = today.getHours();
-var min = today.getMinutes();
-var ss = today.getSeconds();
+// // ----------Generate current date and time----------
+// var today = new Date();
+// var dd = String(today.getDate()).padStart(2, '0');
+// var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+// var yyyy = today.getFullYear();
+// var hh = today.getHours();
+// var min = today.getMinutes();
+// var ss = today.getSeconds();
 
-today = yyyy + '-' + mm + '-' + dd + ' ' + hh + ':' + min + ':' + ss;
+// today = yyyy + '-' + mm + '-' + dd + ' ' + hh + ':' + min + ':' + ss;
 // console.log(today);
 
+//---------------------------------------------------------
 //----------Functions----------
+//---------------------------------------------------------
+
+//----------DateTime Function----------
+function generateCurrentDateTime () {
+    // ----------Generate current date and time----------
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+    var yyyy = today.getFullYear();
+    var hh = today.getHours();
+    var min = today.getMinutes();
+    var ss = today.getSeconds();
+
+    today = yyyy + '-' + mm + '-' + dd + ' ' + hh + ':' + min + ':' + ss;
+    return today;
+
+}
+
+//----------Login Function----------
 function getUserByLogin() {
     event.preventDefault();
-    var login_id = document.getElementById('loginID').value; //input_amount = document.getElementById('topUpAmount').value; 
+    var login_id = document.getElementById('loginID').value; 
     var password = document.getElementById('password').value; 
     console.log("login id is " + login_id);
     fetch(`http://localhost:3000/user/login?login_id='${login_id}'`, {method: "GET"}) //    fetch("http://localhost:3000/transaction/all", {method: "GET"})
@@ -37,27 +60,26 @@ function getUserByLogin() {
                 //console.log(item.trans_bal);
             });
 
-//            $(".transTable").html(text)
+
 
         })
         .catch((error) => console.log("error", error));
-//        return dataSample;
+
 };
 
+//----------Refresh/Update Display Function Group----------
 function getTransByIdAll() {
     fetch(`http://localhost:3000/transaction/all?user_id=${user_id}`, {method: "GET"}) //    fetch("http://localhost:3000/transaction/all", {method: "GET"})
         .then((response) =>  response.json())
         .then((data) => {
-            //console.log(data);
-            //dataSample = data;
-            //return data;
+
             var text = `
               <table class="GeneratedTable">
                 <tr>
                   <th>Transaction Type</th> 
                   <th>Timestamp</th>
                   <th>Amount</th>
-                </tr>`; //localhost:3000/transaction/all?user_id=1
+                </tr>`; 
 
             data.forEach((item) => {
                 text += `
@@ -70,27 +92,24 @@ function getTransByIdAll() {
             });
             text += "</table>";
             document.querySelector('.transTable').innerHTML = text;
-//            $(".transTable").html(text)
+
 
         })
         .catch((error) => console.log("error", error));
-//        return dataSample;
+
 };
 
 function getTransByIdRecent() {
-    fetch(`http://localhost:3000/transaction/recent?user_id=${user_id}`, {method: "GET"}) //    fetch("http://localhost:3000/transaction/all", {method: "GET"})
+    fetch(`http://localhost:3000/transaction/recent?user_id=${user_id}`, {method: "GET"}) 
         .then((response) =>  response.json())
         .then((data) => {
-            //console.log(data);
-            //dataSample = data;
-            //return data;
             var text = `
               <table class="GeneratedTable">
                 <tr>
                   <th>Transaction Type</th> 
                   <th>Timestamp</th>
                   <th>Amount</th>
-                </tr>`; //localhost:3000/transaction/all?user_id=1
+                </tr>`; 
 
             data.forEach((item) => {
                 text += `
@@ -102,20 +121,17 @@ function getTransByIdRecent() {
             });
             text += "</table>";
             document.querySelector('.transTable').innerHTML = text;
-//            $(".transTable").html(text)
+
 
         })
         .catch((error) => console.log("error", error));
-//        return dataSample;
+
 };
 
 function getInvestByIdAll() {
-    fetch(`http://localhost:3000/investment/all?user_id=${user_id}`, {method: "GET"}) //    fetch("http://localhost:3000/transaction/all", {method: "GET"})
+    fetch(`http://localhost:3000/investment/all?user_id=${user_id}`, {method: "GET"}) 
         .then((response) =>  response.json())
         .then((data) => {
-            //console.log(data);
-            //dataSample = data;
-            //return data;
             var text = `
               <table class="GeneratedTable">
                 <tr>
@@ -123,7 +139,7 @@ function getInvestByIdAll() {
                   <th>Timestamp</th>
                   <th>Bought/ Sold</th>
                   <th>Amount</th>
-                </tr>`; //localhost:3000/transaction/all?user_id=1
+                </tr>`; 
 
             var boughtSold
             
@@ -141,20 +157,15 @@ function getInvestByIdAll() {
             });
             text += "</table>";
             document.querySelector('.investTable').innerHTML = text;
-//            $(".transTable").html(text)
 
         })
         .catch((error) => console.log("error", error));
-//        return dataSample;
 };
 
 function getInvestByIdRecent() {
-    fetch(`http://localhost:3000/investment/recent?user_id=${user_id}`, {method: "GET"}) //    fetch("http://localhost:3000/transaction/all", {method: "GET"})
+    fetch(`http://localhost:3000/investment/recent?user_id=${user_id}`, {method: "GET"}) 
         .then((response) =>  response.json())
         .then((data) => {
-            //console.log(data);
-            //dataSample = data;
-            //return data;
             var text = `
               <table class="GeneratedTable">
                 <tr>
@@ -162,7 +173,7 @@ function getInvestByIdRecent() {
                   <th>Timestamp</th>
                   <th>Bought/ Sold</th>
                   <th>Amount</th>
-                </tr>`; //localhost:3000/transaction/all?user_id=1
+                </tr>`; 
 
             var boughtSold
             
@@ -180,53 +191,55 @@ function getInvestByIdRecent() {
             });
             text += "</table>";
             document.querySelector('.investTable').innerHTML = text;
-//            $(".transTable").html(text)
 
         })
         .catch((error) => console.log("error", error));
-//        return dataSample;
 };
 
 function getTransBalById() {
-    fetch(`http://localhost:3000/user/trans_bal?user_id=${user_id}`, {method: "GET"}) //    fetch("http://localhost:3000/transaction/all", {method: "GET"})
+    fetch(`http://localhost:3000/user/trans_bal?user_id=${user_id}`, {method: "GET"}) 
         .then((response) =>  response.json())
         .then((data) => {            
             data.forEach((item) => {
                 document.querySelector('#balance').innerHTML = `$ ${item.trans_bal}`
-                //console.log(item.trans_bal);
             });
 
-//            $(".transTable").html(text)
 
         })
         .catch((error) => console.log("error", error));
-//        return dataSample;
 };
 
 function getInvestBalById() {
-    fetch(`http://localhost:3000/user/invest_bal?user_id=${user_id}`, {method: "GET"}) //    fetch("http://localhost:3000/transaction/all", {method: "GET"})
+    fetch(`http://localhost:3000/user/invest_bal?user_id=${user_id}`, {method: "GET"}) 
         .then((response) =>  response.json())
         .then((data) => {            
             data.forEach((item) => {
                 document.querySelector('#DBSfundVal').innerHTML = `$ ${item.dbs_fund_bal}`
                 document.querySelector('#OCBCfundVal').innerHTML = `$ ${item.ocbc_fund_bal}`
                 document.querySelector('#UOBfundVal').innerHTML = `$ ${item.uob_fund_bal}`
-                //console.log(item.trans_bal);
-                // <td id="DBSfundVal">$ 0.00</td>
-                // <td id="OCBCfundVal">$ 0.00</td>
-                // <td id="UOBfundVal">$ 0.00</td>
             });
 
-//            $(".transTable").html(text)
 
         })
         .catch((error) => console.log("error", error));
-//        return dataSample;
 };
 
+function updateValues() {
+  getTransByIdRecent();
+  getInvestByIdRecent();
+  getTransBalById();
+  getInvestBalById();
+}
+
+//----------END OF Refresh/Update Display Function Group----------
+
+
+//----------Top-up and Trasnfer Functions Group----------
 function addTrans() {
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
+    today = generateCurrentDateTime ();
+    console.log(today);
   
     // Populate this data from e.g. form.
     var raw = JSON.stringify({
@@ -305,9 +318,7 @@ function topUpSubmitButton() {
         addTrans();
         closeFormTopUp();
     }
-    //event.preventDefault();
-    //updateTransBalById();
-    //updateValues();
+
 }
 
 function transferSubmitButton() {
@@ -324,16 +335,12 @@ function transferSubmitButton() {
         closeFormTopUp();
     }
 
-    //updateTransBalById();
-    //updateValues();
+
 }
 
-function updateValues() {
-    getTransByIdRecent();
-    getInvestByIdRecent();
-    getTransBalById();
-    getInvestBalById();
- }
+//----------END OF Top-up and Trasnfer Functions Group----------
+
+
 
 function init() {
     // document.querySelector('.transTable').innerHTML = 'Please login';
