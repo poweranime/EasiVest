@@ -123,10 +123,18 @@
       <form action="/action_page.php" class="form-container">
       <h2>Buy</h2>
 
-      <label for="amount"><b>Amount</b></label>
-      <input type="number" placeholder="Enter Amount" name="Buy" required>
 
-      <button type="submit" class="btn">Submit</button>
+      <label for="trans_des"><b>Fund Name</b></label>
+      <select id="fundBuy" name="Fund to buy" required>
+      <option value="DBS Fund">DBS Fund</option>
+      <option value="OCBC Fund">OCBC Fund</option>
+      <option value="UOB Fund">UOB Fund</option></select>
+            <input type="number" placeholder="Enter Amount" id="buyAmount"required>
+
+      <!--<label for="amount"><b>Amount</b></label>
+      <input type="number" placeholder="Enter Amount" name="Buy" required>-->
+
+      <button type="submit" class="btn" onclick="buySubmitButton()">Submit</button>
       <button type="button" class="btn cancel" onclick="closeFormBuy()">Close</button>
       </form>
       </div>
@@ -135,10 +143,17 @@
     <form action="/action_page.php" class="form-container">
     <h2>Sell</h2>
 
-    <label for="amount"><b>Amount</b></label>
-    <input type="number" placeholder="Enter Amount" name="Sell" required>
+    <label for="trans_des"><b>Fund Name</b></label>
+    <select id="fundSell" name="Fund to sell" required>
+      <option value="DBS Fund">DBS Fund</option>
+      <option value="OCBC Fund">OCBC Fund</option>
+      <option value="UOB Fund">UOB Fund</option></select>
+    <input type="number" placeholder="Enter Amount" id="sellAmount" required>
 
-    <button type="submit" class="btn">Submit</button>
+    <!--<label for="amount"><b>Amount</b></label>
+    <input type="number" placeholder="Enter Amount" name="Sell" required>-->
+
+    <button type="submit" class="btn" onclick="sellSubmitButton()">Submit</button>
     <button type="button" class="btn cancel" onclick="closeFormSell()">Close</button>
     </form>
   </div>

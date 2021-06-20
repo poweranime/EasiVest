@@ -4,7 +4,7 @@
 // ----------Initialise variables ----------
 //---------------------------------------------------------
 var user_id = 1;
-var trans_amount, trans_type_, trans_des_, input_amount, today
+var trans_amount, trans_type_, trans_des_, input_amount, today, fundChoice, invest_amount, transaction_id, risk_profile_, nav_price_, brokerage_
 var date 
 //var login_id = 'Newberry'; 
 //var password = 'crTufWpe';
@@ -54,6 +54,7 @@ function getUserByLogin() {
             data.forEach((item) => {
                 if (password===item.password) {
                     user_id = item.user_id;
+                    risk_profile_ = item.risk_profile;
                     updateValues()
                 }
                 //document.querySelector('#balance').innerHTML = `$ ${item.trans_bal}`
@@ -77,15 +78,19 @@ function getTransByIdAll() {
               <table class="GeneratedTable">
                 <tr>
                   <th>Transaction Type</th> 
-                  <th>Timestamp</th>
+                  <th>Date</th>
                   <th>Amount</th>
                 </tr>`; 
 
             data.forEach((item) => {
+                //Convert datetime format to just date
+                date = String(item.timestamp);
+                date = date.substring(0,10);
+
                 text += `
                     <tr>
                       <td>${item.trans_type}<br>${item.trans_des}</td>
-                      <td>${item.timestamp}</td>
+                      <td>${date}</td>
                       <td>${item.amount}</td>
                     </tr>`;
                 
@@ -107,15 +112,19 @@ function getTransByIdRecent() {
               <table class="GeneratedTable">
                 <tr>
                   <th>Transaction Type</th> 
-                  <th>Timestamp</th>
+                  <th>Date</th>
                   <th>Amount</th>
                 </tr>`; 
 
             data.forEach((item) => {
+                //Convert datetime format to just date
+                date = String(item.timestamp);
+                date = date.substring(0,10);
+
                 text += `
                     <tr>
                       <td>${item.trans_type}<br>${item.trans_des}</td>
-                      <td>${item.timestamp}</td>
+                      <td>${date}</td>
                       <td>${item.amount}</td>
                     </tr>`;
             });
@@ -136,7 +145,7 @@ function getInvestByIdAll() {
               <table class="GeneratedTable">
                 <tr>
                   <th>Investment Name</th> 
-                  <th>Timestamp</th>
+                  <th>Date</th>
                   <th>Bought/ Sold</th>
                   <th>Amount</th>
                 </tr>`; 
@@ -147,10 +156,15 @@ function getInvestByIdAll() {
                 if (item.amount < 0) {
                     boughtSold = 'Sold';
                 } else {boughtSold = 'Bought'};
+
+                //Convert datetime format to just date
+                date = String(item.timestamp);
+                date = date.substring(0,10);
+
                 text += `
                     <tr>
                       <td>${item.investment_name}</td>
-                      <td>${item.timestamp}</td>
+                      <td>${date}</td>
                       <td>${boughtSold}</td>
                       <td>${item.amount}</td>
                     </tr>`;
@@ -170,7 +184,7 @@ function getInvestByIdRecent() {
               <table class="GeneratedTable">
                 <tr>
                   <th>Investment Name</th> 
-                  <th>Timestamp</th>
+                  <th>Date</th>
                   <th>Bought/ Sold</th>
                   <th>Amount</th>
                 </tr>`; 
@@ -181,10 +195,15 @@ function getInvestByIdRecent() {
                 if (item.amount < 0) {
                     boughtSold = 'Sold';
                 } else {boughtSold = 'Bought'};
+
+                //Convert datetime format to just date
+                date = String(item.timestamp);
+                date = date.substring(0,10);
+
                 text += `
                     <tr>
                       <td>${item.investment_name}</td>
-                      <td>${item.timestamp}</td>
+                      <td>${date}</td>
                       <td>${boughtSold}</td>
                       <td>${item.amount}</td>
                     </tr>`;
@@ -290,7 +309,7 @@ function updateTransBalById() {
 
                 fetch(`http://localhost:3000/user/update_trans_bal?user_id=${user_id}`, requestOptions) //generate command to update balance
                   .then((response) => response.text())
-                  .then((result) => updateValues()) //.then((result) => console.log(result))
+                  .then((result) => updateValues())  //then update values displayed on HTML
                   .catch((error) => console.log("error", error));
               
 
@@ -312,7 +331,7 @@ function topUpSubmitButton() {
     trans_amount = input_amount;
     console.log(trans_amount); //if((val !== undefined) && (val !== "")) {
     trans_type_ = 'Top Up'; 
-    trans_des_ = 'Debit Card';
+    trans_des_ = 'Mastercard';
 
     if((input_amount !== undefined) && (input_amount !== "") && (input_amount > 0)) {
         addTrans();
@@ -328,7 +347,7 @@ function transferSubmitButton() {
     console.log("trans_amount is")
     console.log(trans_amount); //if((val !== undefined) && (val !== "")) {
     trans_type_ = 'Withdrawal'; 
-    trans_des_ = 'To Bank Account XXXXXXX';
+    trans_des_ = 'PayNow';
 
     if((input_amount !== undefined) && (input_amount !== "") && (input_amount > 0)) {
         addTrans();
@@ -340,6 +359,231 @@ function transferSubmitButton() {
 
 //----------END OF Top-up and Trasnfer Functions Group----------
 
+//----------Buy and Sell Investments Functions Group----------
+function addTransInv() {
+  var myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+  today = generateCurrentDateTime ();
+  console.log(today);
+
+  // Populate this data from e.g. form.
+  var raw = JSON.stringify({
+    user_id: user_id,
+    timestamp: today,
+    trans_type: trans_type_,
+    trans_des: trans_des_,
+    amount: trans_amount,
+  });
+
+  var requestOptions = {
+    method: "POST",
+    headers: myHeaders,
+    body: raw,
+  };
+
+  fetch("http://localhost:3000/transaction/add", requestOptions)
+    .then((response) => response.text())
+    .then((result) => updateTransBalByIdInv()) //.then((result) => console.log(result)) 
+    .catch((error) => console.log("error", error));
+}
+
+function updateTransBalByIdInv() {
+
+  fetch(`http://localhost:3000/user/trans_bal?user_id=${user_id}`, {method: "GET"}) // first get the latest balance from user data base
+      .then((response) =>  response.json())
+      .then((data) => {            
+          data.forEach((item) => {
+              var balanceNew = parseFloat(item.trans_bal) + parseFloat(trans_amount); //then calculate updated balance = retrieved balance + transaction amount
+              console.log("balanceNew");
+              console.log(balanceNew);
+              //balanceNew = 8000; 
+
+              //--Create json of input data
+              var myHeaders = new Headers();
+              myHeaders.append("Content-Type", "application/json");
+
+              var raw = JSON.stringify({
+                  trans_bal: balanceNew, 
+                });
+              
+              var requestOptions = {
+                  method: "POST",
+                  headers: myHeaders,
+                  body: raw,
+                };
+              //--end of Create json of input data
+
+              fetch(`http://localhost:3000/user/update_trans_bal?user_id=${user_id}`, requestOptions) //generate command to update balance
+                .then((response) => response.text())
+                .then((result) => addInvest())  //  .then((result) => updateValues()) 
+                .catch((error) => console.log("error", error));
+            
+
+          });
+
+
+      })
+      .catch((error) => console.log("error", error));
+
+};
+
+function addInvest() {
+
+  fetch(`http://localhost:3000/transaction/all_allCol?user_id=${user_id}`, {method: "GET"}) // first get the latest balance from user data base
+      .then((response) =>  response.json())
+      .then((data) => {
+          // var i = 0;            
+          // data.forEach((item) => {
+          //     if (i === 0) {
+          //       transaction_id = item.trans_id;
+          //       //console.log("in inner loop")
+          //     }
+          //     i++;
+          //     //console.log("item.trans_id is " + item.trans_id)
+          //     //console.log("transaction ID is " + transaction_id);
+          // });
+          
+          transaction_id = data[0].trans_id;
+          console.log("test extraction: transaction ID is " + data[0].trans_id);
+
+          //--Create json of input data
+          var myHeaders = new Headers();
+          myHeaders.append("Content-Type", "application/json");
+
+          var raw = JSON.stringify({
+              trans_id: transaction_id,
+              user_id: user_id,
+              timestamp: today,
+              risk_profile: risk_profile_,
+              investment_name: fundChoice,
+              amount: invest_amount,
+              nav_price: nav_price_,
+              brokerage: brokerage_,
+
+            });
+          
+          var requestOptions = {
+              method: "POST",
+              headers: myHeaders,
+              body: raw,
+            };
+          //--end of Create json of input data
+
+          fetch(`http://localhost:3000/investment/add`, requestOptions) //generate command to update balance
+            .then((response) => response.text())
+            .then((result) => updateInvBalById())  // then update values displayed on HTML
+            .catch((error) => console.log("error", error));
+
+        
+
+      })
+      .catch((error) => console.log("error", error));
+
+};
+
+function updateInvBalById() {
+
+  fetch(`http://localhost:3000/user/invest_bal?user_id=${user_id}`, {method: "GET"}) // first get the latest balance from user data base
+      .then((response) =>  response.json())
+      .then((data) => {            
+          data.forEach((item) => {
+              var DBSamt, OCBCamt, UOBamt
+              DBSamt = 0;
+              OCBCamt = 0;
+              UOBamt = 0;
+
+              if (fundChoice === "DBS Fund") {
+                DBSamt = invest_amount;
+              } else if (fundChoice === "OCBC Fund") {
+                OCBCamt = invest_amount;
+              } else if (fundChoice === "UOB Fund") {
+                UOBamt = invest_amount;
+              }
+
+              var DBSbalNew = parseFloat(item.dbs_fund_bal) + parseFloat(DBSamt); //then calculate updated balance = retrieved balance + transaction amount
+              var OCBCbalNew = parseFloat(item.ocbc_fund_bal) + parseFloat(OCBCamt); //then calculate updated balance = retrieved balance + transaction amount
+              var UOBbalNew = parseFloat(item.uob_fund_bal) + parseFloat(UOBamt); //then calculate updated balance = retrieved balance + transaction amount
+              console.log("Fund Balance New are " + DBSbalNew);
+              console.log("Fund Balance New are " + OCBCbalNew);
+              console.log("Fund Balance New are " + UOBbalNew);
+              //balanceNew = 8000; 
+
+              //--Create json of input data
+              var myHeaders = new Headers();
+              myHeaders.append("Content-Type", "application/json");
+
+              var raw = JSON.stringify({
+                  dbs_fund_bal: DBSbalNew,
+                  ocbc_fund_bal: OCBCbalNew,
+                  uob_fund_bal: UOBbalNew,
+                });
+              
+              var requestOptions = {
+                  method: "POST",
+                  headers: myHeaders,
+                  body: raw,
+                };
+              //--end of Create json of input data
+
+              fetch(`http://localhost:3000/user/update_inv_bal?user_id=${user_id}`, requestOptions) //generate command to update balance
+                .then((response) => response.text())
+                .then((result) => updateValues())  //  .then((result) => updateValues()) 
+                .catch((error) => console.log("error", error));
+            
+
+          });
+
+
+      })
+      .catch((error) => console.log("error", error));
+
+};
+
+function buySubmitButton() {
+  event.preventDefault();
+  input_amount = document.getElementById('buyAmount').value; // keep a separate input_amount variable to check that user did not enter negative/ invalid inputs. Code example: var val = document.querySelector('#newNumber').value;
+  console.log("function start");
+  console.log("input_amount is " + input_amount);
+  //input_amount = 200; 
+  trans_amount = input_amount * -1;
+  invest_amount = trans_amount * -1;
+  fundChoice = document.getElementById("fundBuy").value;
+  console.log("trans_amount is " + trans_amount);
+  console.log("invest_amount is " + invest_amount);  
+  console.log("selected fund is " + fundChoice);
+  trans_type_ = 'Investments'; 
+  trans_des_ = fundChoice; 
+  nav_price_ = 2.00;
+  brokerage_ = 2.00;
+
+  if((input_amount !== undefined) && (input_amount !== "") && (input_amount > 0)) {
+      addTransInv(); // **to be updated
+      closeFormTopUp(); // **to be updated
+  }
+
+}
+
+function sellSubmitButton() {
+  event.preventDefault();
+  input_amount = document.getElementById('sellAmount').value; // keep a separate input_amount variable to check that user did not enter negative/ invalid inputs. Code example: var val = document.querySelector('#newNumber').value;
+  trans_amount = input_amount;
+  invest_amount = trans_amount * -1;
+  fundChoice = document.getElementById("fundSell").value;
+  console.log("trans_amount is " + trans_amount); 
+  console.log("invest_amount is " + invest_amount); 
+  console.log("selected fund is " + fundChoice);
+  trans_type_ = 'Investments'; 
+  trans_des_ = fundChoice; 
+  nav_price_ = 2.00;
+  brokerage_ = 2.00;
+
+  if((input_amount !== undefined) && (input_amount !== "") && (input_amount > 0)) {
+      addTransInv(); // **to be updated
+      closeFormTopUp(); // **to be updated
+  }
+
+
+}
 
 
 function init() {
