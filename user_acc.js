@@ -45,6 +45,20 @@ router.get("/user/invest_bal", (request, response) => {
     });
 });
 
+//API_ID=11
+router.get("/user/login", (request, response) => {
+    database.connection.query(`select *
+                               from user
+                               where login_id = ${request.query.login_id}`, (errors, results) => { //                               from transaction`, (errors, results) => 
+        if (errors) {
+            console.log(errors);
+            response.status(500).send("Internal Serve Error");
+        } else {
+            response.status(200).send(results);
+        }
+    });
+});
+
 //API_ID=14
 router.get("/user/allCol", (request, response) => {
     database.connection.query(`select *

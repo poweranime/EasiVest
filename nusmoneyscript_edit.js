@@ -1,9 +1,11 @@
 //const fetch = require("node-fetch"); //only needed for run inside nodeJS, to be removed when integrated with HTML
-var user_id = 10;
+var user_id = 1;
 var trans_amount, trans_type_, trans_des_, input_amount
 var date 
-//let dataSample, dataSample2;
-//   e.preventDefault();  //to prevent form from submitting and refreshing the page
+
+//var login_id = 'Newberry'; 
+//var password = 'crTufWpe';
+
 
 // ----------Generate current date and time----------
 var today = new Date();
@@ -18,6 +20,30 @@ today = yyyy + '-' + mm + '-' + dd + ' ' + hh + ':' + min + ':' + ss;
 // console.log(today);
 
 //----------Functions----------
+function getUserByLogin() {
+    event.preventDefault();
+    var login_id = document.getElementById('loginID').value; //input_amount = document.getElementById('topUpAmount').value; 
+    var password = document.getElementById('password').value; 
+    console.log("login id is " + login_id);
+    fetch(`http://localhost:3000/user/login?login_id='${login_id}'`, {method: "GET"}) //    fetch("http://localhost:3000/transaction/all", {method: "GET"})
+        .then((response) =>  response.json())
+        .then((data) => {            
+            data.forEach((item) => {
+                if (password===item.password) {
+                    user_id = item.user_id;
+                    updateValues()
+                }
+                //document.querySelector('#balance').innerHTML = `$ ${item.trans_bal}`
+                //console.log(item.trans_bal);
+            });
+
+//            $(".transTable").html(text)
+
+        })
+        .catch((error) => console.log("error", error));
+//        return dataSample;
+};
+
 function getTransByIdAll() {
     fetch(`http://localhost:3000/transaction/all?user_id=${user_id}`, {method: "GET"}) //    fetch("http://localhost:3000/transaction/all", {method: "GET"})
         .then((response) =>  response.json())
@@ -303,16 +329,22 @@ function transferSubmitButton() {
 }
 
 function updateValues() {
-    // document.querySelector('.transTable').innerHTML = '';
-    // document.querySelector('.invesetTable').innerHTML = '';
-    // document.querySelector('#balance').innerHTML = `$ 0.00`
     getTransByIdRecent();
     getInvestByIdRecent();
     getTransBalById();
     getInvestBalById();
  }
 
-window.onload = updateValues();
+function init() {
+    // document.querySelector('.transTable').innerHTML = 'Please login';
+    // document.querySelector('.investTable').innerHTML = 'Please login';
+    document.querySelector('#balance').innerHTML = `$ 0.00`;
+    document.querySelector('#DBSfundVal').innerHTML = `$ 0.00`;
+    document.querySelector('#OCBCfundVal').innerHTML = `$ 0.00`;
+    document.querySelector('#UOBfundVal').innerHTML = `$ 0.00`;
+}
+
+window.onload = init();
 // topUpSubmitButton();
 // transactionButton();
 // updateTransBalById();
