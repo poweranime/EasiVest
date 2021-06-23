@@ -10,7 +10,7 @@ router.get("/user/trans_bal", (request, response) => {
                                where user_id = ${request.query.user_id}`, (errors, results) => { //                               from transaction`, (errors, results) => 
         if (errors) {
             console.log(errors);
-            response.status(500).send("Internal Serve Error");
+            response.status(500).send("Internal Server Error");
         } else {
             response.status(200).send(results);
         }
@@ -24,9 +24,9 @@ router.post("/user/update_trans_bal", (request, response) => {
                                where user_id = ${request.query.user_id}`, (errors, results) => { //                               from transaction`, (errors, results) =>  //set trans_bal = ${request.body.trans_bal}
         if (errors) {
             console.log(errors);
-            response.status(500).send("Internal Serve Error");
+            response.status(500).send("Internal Server Error");
         } else {
-            response.status(200).send(results);
+            response.status(200).send("Updated Successfully"); //response.status(200).send(results);
         }
     });
 });
@@ -38,7 +38,7 @@ router.get("/user/invest_bal", (request, response) => {
                                where user_id = ${request.query.user_id}`, (errors, results) => { //                               from transaction`, (errors, results) => 
         if (errors) {
             console.log(errors);
-            response.status(500).send("Internal Serve Error");
+            response.status(500).send("Internal Server Error");
         } else {
             response.status(200).send(results);
         }
@@ -52,7 +52,7 @@ router.get("/user/login", (request, response) => {
                                where login_id = ${request.query.login_id}`, (errors, results) => { //                               from transaction`, (errors, results) => 
         if (errors) {
             console.log(errors);
-            response.status(500).send("Internal Serve Error");
+            response.status(500).send("Internal Server Error");
         } else {
             response.status(200).send(results);
         }
@@ -66,7 +66,7 @@ router.get("/user/allCol", (request, response) => {
                                where user_id = ${request.query.user_id}`, (errors, results) => { //                               from transaction`, (errors, results) => 
         if (errors) {
             console.log(errors);
-            response.status(500).send("Internal Serve Error");
+            response.status(500).send("Internal Server Error");
         } else {
             response.status(200).send(results);
         }
