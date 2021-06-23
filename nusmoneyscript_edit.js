@@ -351,7 +351,8 @@ function transferSubmitButton() {
 
     if((input_amount !== undefined) && (input_amount !== "") && (input_amount > 0)) {
         addTrans();
-        closeFormTopUp();
+        //closeFormTopUp();
+        closeFormTransfer();
     }
 
 
@@ -542,6 +543,7 @@ function updateInvBalById() {
 function buySubmitButton() {
   event.preventDefault();
   input_amount = document.getElementById('buyAmount').value; // keep a separate input_amount variable to check that user did not enter negative/ invalid inputs. Code example: var val = document.querySelector('#newNumber').value;
+  //document.getElementById('buyAmount').innerHTML = ''; 
   console.log("function start");
   console.log("input_amount is " + input_amount);
   //input_amount = 200; 
@@ -558,7 +560,9 @@ function buySubmitButton() {
 
   if((input_amount !== undefined) && (input_amount !== "") && (input_amount > 0)) {
       addTransInv(); // **to be updated
-      closeFormTopUp(); // **to be updated
+      //closeFormTopUp(); // **to be updated
+      closeFormBuy();
+
   }
 
 }
@@ -579,7 +583,8 @@ function sellSubmitButton() {
 
   if((input_amount !== undefined) && (input_amount !== "") && (input_amount > 0)) {
       addTransInv(); // **to be updated
-      closeFormTopUp(); // **to be updated
+      //closeFormTopUp(); // **to be updated
+      closeFormSell();
   }
 
 
@@ -589,10 +594,10 @@ function sellSubmitButton() {
 function init() {
     // document.querySelector('.transTable').innerHTML = 'Please login';
     // document.querySelector('.investTable').innerHTML = 'Please login';
-    document.querySelector('#balance').innerHTML = `$ 0.00`;
-    document.querySelector('#DBSfundVal').innerHTML = `$ 0.00`;
-    document.querySelector('#OCBCfundVal').innerHTML = `$ 0.00`;
-    document.querySelector('#UOBfundVal').innerHTML = `$ 0.00`;
+    //document.querySelector('#balance').innerHTML = `$ 0.00`;
+    //document.querySelector('#DBSfundVal').innerHTML = `$ 0.00`;
+    //document.querySelector('#OCBCfundVal').innerHTML = `$ 0.00`;
+    //document.querySelector('#UOBfundVal').innerHTML = `$ 0.00`;
 }
 
 window.onload = init();
